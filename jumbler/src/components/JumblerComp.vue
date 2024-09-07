@@ -14,6 +14,7 @@
             class="draggable"
             draggable="true"
             @dragstart="dragStart(word, $event)"
+            @click="handleWordClick(word)"
           >
             {{ word }}
           </div>
@@ -34,11 +35,6 @@
       </div>
       <button class="btn btn-primary btn-size mt-3" @click="mix">{{ isMixed ? "Remix" : "Mix" }}</button>
       <button class="btn btn-secondary btn-size mt-3" @click="reset">Reset</button>
-      <!-- <transition name="fade">
-        <div v-if="isFullyAssembled" class="correct-message">
-          {{ correctWordCount }} out of {{ originalWords.length }} words are correct.
-        </div>
-      </transition> -->
     </div>
   </div>
 </template>
@@ -104,6 +100,21 @@ export default {
         if (this.assembledSentence.length === this.originalWords.length) {
           this.isFullyAssembled = true;
         }
+      }
+    },
+    handleWordClick(word) {
+      // Handle word click for manual sentence assembly
+      this.moveWordToAssembled(word);
+    },
+    moveWordToAssembled(word) {
+      // Remove word from sentencePieces and add it to assembledSentence
+      this.assembledSentence.push(word);
+      const index = this.sentencePieces.indexOf(word);
+      if (index > -1) {
+        this.sentencePieces.splice(index, 1);
+      }
+      if (this.assembledSentence.length === this.originalWords.length) {
+        this.isFullyAssembled = true;
       }
     },
     isCorrect(word, index) {
